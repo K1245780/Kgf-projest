@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Bot Config</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; color: #555; font-weight: 600; }
+        input {
+            width: 100%; padding: 15px; border: 2px solid #e1e5e9;
+            border-radius: 10px; font-size: 16px; transition: all 0.3s;
+        }
+        input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .btn {
+            width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none; border-radius: 10px; font-size: 18px;
+            font-weight: 600; cursor: pointer; transition: transform 0.3s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .url-box {
+            margin-top: 25px; padding: 20px; background: #f8f9fa;
+            border-radius: 10px; word-break: break-all; font-family: monospace;
+            font-size: 14px; color: #333; border: 2px solid #e9ecef;
+        }
+        .copy-btn { margin-top: 15px; background: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Admin Panel</h1>
+        <form id="configForm">
+            <div class="form-group">
+                <label for="botToken">Bot Token:</label>
+                <input type="text" id="botToken" placeholder="1234567890:ABCdef..." required>
+            </div>
+            <div class="form-group">
+                <label for="chatId">Chat ID:</label>
+                <input type="text" id="chatId" placeholder="@username or 123456789" required>
+            </div>
+            <button type="submit" class="btn">🔗 Generate User Link</button>
+        </form>
+        
+        <div id="result" style="display: none;">
+            <div class="url-box" id="userUrl"></div>
+            <button class="btn copy-btn" onclick="copyUrl()">📋 Copy Link</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('configForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const botToken = document.getElementById('botToken').value;
+            const chatId = document.getElementById('chatId').value;
+            
+            // Encode config for user.html
+            const config = btoa(JSON.stringify({token: botToken, chatid: chatId}));
+            const userLink = `user.html?c=${config}`;
+            const fullUrl = window.location.origin + '/' + userLink;
+            
+            document.getElementById('userUrl').textContent = fullUrl;
+            document.getElementById('result').style.display = 'block';
+        });
+
+        function copyUrl() {
+            navigator.clipboard.writeText(document.getElementById('userUrl').textContent);
+            const btn = event.target;
+            const original = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => btn.textContent = original, 2000);
+        }
+    </script>
+</body>
+</html>
